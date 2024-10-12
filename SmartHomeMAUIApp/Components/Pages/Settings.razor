@@ -1,0 +1,28 @@
+﻿@page "/settings"
+@layout MainLayout
+@using SmartHomeMAUIApp.Components.Layout
+@using SmartHomeMAUIApp.ViewModels
+@inject SettingsViewModel viewModel
+
+<h3>Settings</h3>
+
+<div>
+    <label for="email">Email:</label>
+    <input id="email" @bind="viewModel.EmailInput" type="email" placeholder="Enter your email" />
+</div>
+
+<p>Your email is: @viewModel.EmailInput</p>
+
+<button @onclick="viewModel.ConfigureCommand.Execute">@viewModel.ConfigureButton</button>
+<p>@viewModel.IsConfigured</p>
+
+<div>
+    <label for="connectionString">Connection String:</label>
+    <input id="connectionString" @bind="viewModel.ConnectionString" type="text" placeholder="Enter your connection string" />
+</div>
+
+
+@code {
+
+}
+
