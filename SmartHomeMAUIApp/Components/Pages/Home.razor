@@ -2,15 +2,17 @@
 @using Shared.Handlers
 @using Shared.Models
 @using SmartHomeMAUIApp.ViewModels
-@inject HomeViewModel viewModel;
+@inject HomeViewModel viewModel
 
-<div class="container">
+<h1>DEVICES</h1>
+
+<div>
     <h1 class="headline"> DEVICES</h1>
 
     <div class="devices">
         @if (Devices != null)
         {
-            @foreach (var device in Devices) 
+            @foreach (var device in Devices)
             {
                 <h3 class="device_id">@device.DeviceId</h3>
                 <p>@device.DeviceName</p>
@@ -28,19 +30,28 @@
     </div>
 </div>
 
-
 @code {
     private IEnumerable<LampDevice> Devices = [];
 
     protected override async Task OnInitializedAsync()
     {
-        Devices = await viewModel.GetDevicesAsync();
-        viewModel.Timer = new Timer(async _ => await SetDevicesAsync(), null, 0, viewModel.TimerInterval);
+        if (viewModel.IotHubInstance.IsRegistryInitialized)
+        {
+            Devices = await viewModel.GetDevicesAsync();
+            viewModel.Timer = new Timer(async _ => await SetDevicesAsync(), null, 0, viewModel.TimerInterval);
+        }
+        else
+        {
+            Console.WriteLine("RegistryManager is not initialized.");
+        }
     }
 
     private async Task SetDevicesAsync()
     {
-        Devices = await viewModel.GetDevicesAsync();
-        await InvokeAsync(StateHasChanged);
+        if (viewModel.IotHubInstance.IsRegistryInitialized)
+        {
+            Devices = await viewModel.GetDevicesAsync();
+            await InvokeAsync(StateHasChanged);
+        }
     }
 }

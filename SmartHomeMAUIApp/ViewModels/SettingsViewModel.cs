@@ -15,12 +15,14 @@ public partial class SettingsViewModel : ObservableObject
     private readonly DatabaseService _database;
     private readonly AzureResourceManager _azureRM;
     private readonly GrpcManager _grpc;
-    public SettingsViewModel(EmailCommunication email, DatabaseService database, AzureResourceManager azureRM, GrpcManager grpc)
+    private readonly AppSettingsService _appSettings;
+    public SettingsViewModel(EmailCommunication email, DatabaseService database, AzureResourceManager azureRM, GrpcManager grpc, AppSettingsService appSettingsService)
     {
         _email = email;
         _database = database;
         _azureRM = azureRM;
         _grpc = grpc;
+        _appSettings = appSettingsService;
 
         var settings = _database.GetSettingsAsync().Result;
         if (settings != null)
@@ -93,9 +95,9 @@ public partial class SettingsViewModel : ObservableObject
 
                 settings.IotHubConnectionString = iotHub.ConnectionString!;
 
-                await _database.SaveSettingsAsync(settings);
+                var result = await _database.SaveSettingsAsync(settings);
 
-                return true;
+                return result == 1 ? true : false;
             }
         }
         catch
@@ -104,5 +106,10 @@ public partial class SettingsViewModel : ObservableObject
         }
        
         return false;
+    }
+
+    public void SaveSettings()
+    {
+        _appSettings.ConnectionString = ConnectionString;
     }
 }

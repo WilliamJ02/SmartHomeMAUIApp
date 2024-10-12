@@ -21,10 +21,11 @@
     </PackageReference>
     <PackageReference Include="microsoft.azure.devices" Version="1.39.1" />
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
   </ItemGroup>
 
 	<ItemGroup>
-		<Protobuf Include="gRPC\Protos\iot.proto" GrpcServices="Server"/>
+		<Protobuf Include="gRPC\Protos\iot.proto" GrpcServices="Server" />
 	</ItemGroup>
 
 </Project>

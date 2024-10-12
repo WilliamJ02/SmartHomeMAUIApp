@@ -18,8 +18,20 @@ public class AzureResourceManager
 
     public async Task InitializeAsync()
     {
-        _client = new(new DefaultAzureCredential());
-        _subscription = await _client.GetDefaultSubscriptionAsync();
+        try
+        {
+            var defaultSubscriptionId = "c6aef30e-b724-47f9-9cb4-7e98797aaeb4";
+            var tenantId = "5c2a06ee-4772-48db-90c3-d69f8666c5bc";
+            _client = new ArmClient(new DefaultAzureCredential(new DefaultAzureCredentialOptions { TenantId = tenantId }));
+
+            _subscription = _client.GetSubscriptionResource(new ResourceIdentifier($"/subscriptions/{defaultSubscriptionId}"));
+
+            var subscriptionDetails = await _subscription.GetAsync();
+        }
+        catch (Exception ex)
+        {
+
+        }
     }
 
     public async Task<ResourceGroupResource> CreateResourceGroupAsync(string resourceGroupName, string location)
@@ -50,6 +62,7 @@ public class AzureResourceManager
             _currentIotHub = operation.Value;
             return operation.Value;
         }
+        
         catch
         {
             return null!;
@@ -67,7 +80,7 @@ public class AzureResourceManager
             _currentIotHub = operation.Value;
             return operation.Value;
         }
-        catch
+        catch (Exception ex)
         {
             return null!;
         }
@@ -103,7 +116,7 @@ public class AzureResourceManager
     {
         try
         {
-            var result = await _currentIotHub.GetKeysForKeyNameAsync(keyName);
+            var result = await iotHub.GetKeysForKeyNameAsync(keyName);
             var value = result.Value;
 
             var iotHubKeyModel = new IotHubKeyModel()

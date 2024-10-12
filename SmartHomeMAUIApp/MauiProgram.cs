@@ -29,6 +29,7 @@ namespace SmartHomeMAUIApp
 
             builder.Services.AddTransient<HomeViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
+            builder.Services.AddSingleton<AppSettingsService>();
 
             builder.Services.AddTransient<EmailCommunication>();
             builder.Services.AddTransient<GrpcManager>();
