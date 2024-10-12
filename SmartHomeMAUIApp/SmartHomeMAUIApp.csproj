@@ -59,11 +59,14 @@
 
     <ItemGroup>        
 		<PackageReference Include="Communitytoolkit.Maui" Version="9.1.0" />        
-		<PackageReference Include="communitytoolkit.mvvm" Version="8.2.2" />   
+		<PackageReference Include="communitytoolkit.mvvm" Version="8.2.2" />        
+		<PackageReference Include="Microsoft.Azure.Devices" Version="1.39.1" />   
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+        <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.4.1" />
+        <PackageReference Include="SendGrid" Version="9.29.3" />
         <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
     </ItemGroup>
 
