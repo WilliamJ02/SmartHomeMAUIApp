@@ -11,10 +11,8 @@
     <input id="email" @bind="viewModel.EmailInput" type="email" placeholder="Enter your email" />
 </div>
 
-<p>Your email is: @viewModel.EmailInput</p>
-
 <button @onclick="viewModel.ConfigureCommand.Execute">@viewModel.ConfigureButton</button>
-<p>@viewModel.IsConfigured</p>
+<p>@viewModel.ConfiguredText</p>
 
 <div>
     <label for="connectionString">Connection String:</label>

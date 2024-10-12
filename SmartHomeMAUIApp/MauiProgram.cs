@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Shared.Azure.Communications;
 using Shared.Database;
+using Shared.gRPC;
 using Shared.Handlers;
 using SmartHomeMAUIApp.ViewModels;
 
@@ -30,6 +31,8 @@ namespace SmartHomeMAUIApp
             builder.Services.AddTransient<SettingsViewModel>();
 
             builder.Services.AddTransient<EmailCommunication>();
+            builder.Services.AddTransient<GrpcManager>();
+            builder.Services.AddTransient<AzureResourceManager>();
             builder.Services.AddTransient<DatabaseService>();
             builder.Services.AddTransient<IotHub>();
 

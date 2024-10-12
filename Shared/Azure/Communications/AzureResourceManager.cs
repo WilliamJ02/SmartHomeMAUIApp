@@ -13,8 +13,8 @@ public class AzureResourceManager
 {
     ArmClient _client = null!;
     SubscriptionResource _subscription = null!;
-    ResourceGroupResource _currentResourceGroup = null!;
-    IotHubDescriptionResource _currentIotHub = null!;
+    ResourceGroupResource? _currentResourceGroup;
+    IotHubDescriptionResource? _currentIotHub;
 
     public async Task InitializeAsync()
     {
@@ -22,14 +22,12 @@ public class AzureResourceManager
         _subscription = await _client.GetDefaultSubscriptionAsync();
     }
 
-    public async Task<ResourceGroupResource> CreateResourceGroupAsync(string resourceGroupName, AzureLocation location)
+    public async Task<ResourceGroupResource> CreateResourceGroupAsync(string resourceGroupName, string location)
     {
         try
         {
-            var loc = location;
-
             ResourceGroupCollection resourceGroups = _subscription.GetResourceGroups();
-            ResourceGroupData resourceGroupData = new(loc);
+            ResourceGroupData resourceGroupData = new(GetAzureLocation(location));
             ArmOperation<ResourceGroupResource> operation = await resourceGroups.CreateOrUpdateAsync(WaitUntil.Completed, resourceGroupName, resourceGroupData);
 
             _currentResourceGroup = operation.Value;
@@ -41,12 +39,12 @@ public class AzureResourceManager
         }
     }
 
-    public async Task<IotHubDescriptionResource> CreateIotHubAsync(string iotHubUniqueName, string sku)
+    public async Task<IotHubDescriptionResource> CreateIotHubAsync(string iotHubUniqueName, string location, string sku)
     {
         try
         {
             IotHubDescriptionCollection iotHubDescriptionCollection = _currentResourceGroup.GetIotHubDescriptions();
-            IotHubDescriptionData iotHubDescriptionData = new(AzureLocation.WestEurope, new IotHubSkuInfo(GetIotHubSku(sku)) { Capacity = 1 });
+            IotHubDescriptionData iotHubDescriptionData = new(location, new IotHubSkuInfo(GetIotHubSku(sku)) { Capacity = 1 });
             ArmOperation<IotHubDescriptionResource> operation = await iotHubDescriptionCollection.CreateOrUpdateAsync(WaitUntil.Completed, iotHubUniqueName, iotHubDescriptionData);
 
             _currentIotHub = operation.Value;
@@ -58,12 +56,12 @@ public class AzureResourceManager
         }
     }
 
-    public async Task<IotHubDescriptionResource> CreateIotHubAsync(ResourceGroupResource resourceGroup, string iotHubUniqueName, string sku)
+    public async Task<IotHubDescriptionResource> CreateIotHubAsync(ResourceGroupResource resourceGroup, string iotHubUniqueName, string location, string sku)
     {
         try
         {
             IotHubDescriptionCollection iotHubDescriptionCollection = resourceGroup.GetIotHubDescriptions();
-            IotHubDescriptionData iotHubDescriptionData = new(AzureLocation.WestEurope, new IotHubSkuInfo(GetIotHubSku(sku)) { Capacity = 1 });
+            IotHubDescriptionData iotHubDescriptionData = new(location, new IotHubSkuInfo(GetIotHubSku(sku)) { Capacity = 1 });
             ArmOperation<IotHubDescriptionResource> operation = await iotHubDescriptionCollection.CreateOrUpdateAsync(WaitUntil.Completed, iotHubUniqueName, iotHubDescriptionData);
 
             _currentIotHub = operation.Value;
@@ -75,21 +73,25 @@ public class AzureResourceManager
         }
     }
 
-    public async Task<IotHubKeyModel> GetIotHubConnectionStringAsync(string keyName = "iothubowner")
+    public async Task<IotHubKeyModel> GetIotHubInfoAsync(string keyName = "iothubowner")
     {
         try
         {
-            var result = await _currentIotHub.GetKeysForKeyNameAsync(keyName);  
-            var value = result.Value;
-
-            var iotHubKeyModel = new IotHubKeyModel()
+            if (_currentIotHub != null)
             {
-                HostName = _currentIotHub.Data.Name,
-                SharedAccessKeyName = value.KeyName,
-                SharedAccessKey = value.PrimaryKey
-            };
-            
-            return iotHubKeyModel;
+                var result = await _currentIotHub.GetKeysForKeyNameAsync(keyName);
+                var value = result.Value;
+
+                var iotHubKeyModel = new IotHubKeyModel()
+                {
+                    HostName = _currentIotHub.Data.Name,
+                    SharedAccessKeyName = value.KeyName,
+                    SharedAccessKey = value.PrimaryKey
+                };
+
+                return iotHubKeyModel;
+            }
+            return null!;
         }
         catch
         {
@@ -117,6 +119,17 @@ public class AzureResourceManager
         {
             return null!;
         }
+    }
+
+    public AzureLocation GetAzureLocation(string location)
+    {
+        return location.ToLower() switch
+        {
+            "westeurope" => AzureLocation.WestEurope,
+            "northeurope" => AzureLocation.NorthEurope,
+            "swedencentral" => AzureLocation.SwedenCentral,
+            _ => AzureLocation.WestEurope,
+        };
     }
 
     public static IotHubSku GetIotHubSku(string sku)
