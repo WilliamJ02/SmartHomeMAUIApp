@@ -6,6 +6,7 @@ using Shared.Azure.Communications;
 using Shared.Database;
 using Shared.gRPC;
 using Shared.Handlers;
+using System.Threading;
 
 namespace SmartHomeMAUIApp.ViewModels;
 
@@ -17,6 +18,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly GrpcManager _grpc;
     private readonly AppSettingsService _appSettings;
     private readonly IotHub? _iotHub;
+    private CancellationTokenSource? _cancellationTokenSource;
     public SettingsViewModel(EmailCommunication email, DatabaseService database, AzureResourceManager azureRM, GrpcManager grpc, AppSettingsService appSettingsService, IotHub? iotHub)
     {
         _email = email;
@@ -124,10 +126,56 @@ public partial class SettingsViewModel : ObservableObject
         {            
             ConnectionSucceededText = "Connection succeeded!";
             ConnectButtonText = "Connected";
+            StartDeviceMonitoring();
         }
         else
         {
             ConnectionSucceededText = "Connection string not found.";
         }
+    }
+
+    private async void StartDeviceMonitoring()
+    {
+        if (_iotHub == null || !_iotHub.IsRegistryInitialized)
+        {
+            return;
+        }
+
+        _cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = _cancellationTokenSource.Token;
+
+        await Task.Run(async () =>
+        {
+            var previousDeviceIds = new HashSet<string>();
+
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    var currentDevices = await _iotHub.GetDevicesAsync();
+                    var currentDeviceIds = new HashSet<string>(currentDevices.Select(d => d.DeviceId));
+
+                    foreach (var deviceId in previousDeviceIds)
+                    {
+                        if (!currentDeviceIds.Contains(deviceId))
+                        {
+                            _email.Send(EmailInput, "IoT Device Deleted", $"<h1>IoT device with ID {deviceId} deleted. </h1>", $"IoT device with ID {deviceId} deleted.");
+                        }
+                    }
+
+                    previousDeviceIds = currentDeviceIds;
+
+                    await Task.Delay(10000, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+        }, cancellationToken);
+    }
+
+    public void StopDeviceMonitoring()
+    {
+        _cancellationTokenSource?.Cancel();
     }
 }

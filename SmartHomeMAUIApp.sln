@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceRemovedAzureFunctions", "DeviceRemovedAzureFunctions\DeviceRemovedAzureFunctions.csproj", "{BD377F87-E0F8-4DE3-9494-DA7F0434F0D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdfkl0", "sdfkl0\sdfkl0.csproj", "{EBB5E7AE-E9DB-4D31-A971-663C6769CD9F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{BD377F87-E0F8-4DE3-9494-DA7F0434F0D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD377F87-E0F8-4DE3-9494-DA7F0434F0D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD377F87-E0F8-4DE3-9494-DA7F0434F0D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBB5E7AE-E9DB-4D31-A971-663C6769CD9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBB5E7AE-E9DB-4D31-A971-663C6769CD9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBB5E7AE-E9DB-4D31-A971-663C6769CD9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBB5E7AE-E9DB-4D31-A971-663C6769CD9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
