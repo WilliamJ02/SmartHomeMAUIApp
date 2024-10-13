@@ -16,18 +16,20 @@ public partial class SettingsViewModel : ObservableObject
     private readonly AzureResourceManager _azureRM;
     private readonly GrpcManager _grpc;
     private readonly AppSettingsService _appSettings;
-    public SettingsViewModel(EmailCommunication email, DatabaseService database, AzureResourceManager azureRM, GrpcManager grpc, AppSettingsService appSettingsService)
+    private readonly IotHub? _iotHub;
+    public SettingsViewModel(EmailCommunication email, DatabaseService database, AzureResourceManager azureRM, GrpcManager grpc, AppSettingsService appSettingsService, IotHub? iotHub)
     {
         _email = email;
         _database = database;
         _azureRM = azureRM;
         _grpc = grpc;
         _appSettings = appSettingsService;
-
+        _iotHub = iotHub;       
+        
         var settings = _database.GetSettingsAsync().Result;
+        
         if (settings != null)
         {
-
             IsConfigured = true;
             EmailInput = settings.EmailAddress;
         }
@@ -108,8 +110,24 @@ public partial class SettingsViewModel : ObservableObject
         return false;
     }
 
+    [ObservableProperty]
+    private string _connectionSucceededText;
+
+    [ObservableProperty]
+    private string _connectButtonText = "Connect";
+
     public void SaveSettings()
     {
         _appSettings.ConnectionString = ConnectionString;
+
+        if (_iotHub.SetConnectionString(_appSettings.ConnectionString) == true)
+        {            
+            ConnectionSucceededText = "Connection succeeded!";
+            ConnectButtonText = "Connected";
+        }
+        else
+        {
+            ConnectionSucceededText = "Connection string not found.";
+        }
     }
 }

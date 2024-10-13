@@ -7,7 +7,7 @@ namespace SmartHomeMAUIApp.ViewModels;
 public partial class HomeViewModel : ObservableObject
 {
     private readonly AppSettingsService _appSettings;
-    private IotHub? _iotHub;
+    private readonly IotHub? _iotHub;
     public Timer? Timer { get; set; }
     public int TimerInterval { get; set; } = 4000;
     public IotHub? IotHubInstance => _iotHub;

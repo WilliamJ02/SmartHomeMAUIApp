@@ -57,6 +57,12 @@
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
 
+    <ItemGroup>
+      <MauiImage Include="wwwroot\images\lightbulb_purple.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </MauiImage>
+    </ItemGroup>
+
     <ItemGroup>        
 		<PackageReference Include="Communitytoolkit.Maui" Version="9.1.0" />        
 		<PackageReference Include="communitytoolkit.mvvm" Version="8.2.2" />        

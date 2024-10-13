@@ -5,7 +5,19 @@
         <NavMenu />
     </div>
 
-    <main>
+    <main style="background-color: rgba(2,11,35,255);
+         display: flex;
+         justify-content: @(isSettingsPage ? "center" : "flex-start");
+         align-items: @(isSettingsPage ? "center" : "flex-start");
+         height: 100vh;">
         @Body
     </main>
+
 </div>
+
+@code {
+    private bool isSettingsPage => NavigationManager.Uri.Contains("settings");
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+}

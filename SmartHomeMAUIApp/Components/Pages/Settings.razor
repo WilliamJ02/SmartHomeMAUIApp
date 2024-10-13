@@ -1,27 +1,57 @@
 ﻿@page "/settings"
-@layout MainLayout
 @using SmartHomeMAUIApp.Components.Layout
 @using SmartHomeMAUIApp.ViewModels
 @inject SettingsViewModel viewModel
 
-<h3>Settings</h3>
 
-<div>
-    <label for="email">Email:</label>
-    <input id="email" @bind="viewModel.EmailInput" type="email" placeholder="Enter your email" />
+
+<div class="settings-container">
+    <h2>Settings</h2>
+
+    <div class="input-box">
+        <p class="input-info">Create Resource Group</p>
+        <input class="input-form" id="email" @bind="viewModel.EmailInput" type="email" placeholder="Email..." />
+        <button class="button" @onclick="CheckAndConfigure">@viewModel.ConfigureButton</button>
+        <p class="error-message">@emailErrorMessage</p>
+    </div>
+
+    <div class="input-box">
+        <p class="input-info">Enter Connection String</p>
+        <input class="input-form" id="connectionString" @bind="viewModel.ConnectionString" type="text" placeholder="Connection string..." />
+        <button class="button" @onclick="CheckAndSaveSettings">@viewModel.ConnectButtonText</button>
+        <p class="error-message">@viewModel.ConnectionSucceededText</p>
+    </div>
 </div>
-
-<button @onclick="viewModel.ConfigureCommand.Execute">@viewModel.ConfigureButton</button>
-<p>@viewModel.ConfiguredText</p>
-
-<div>
-    <label for="connectionString">Connection String:</label>
-    <input id="connectionString" @bind="viewModel.ConnectionString" type="text" placeholder="Enter your connection string" />
-</div>
-
-<button @onclick="viewModel.SaveSettings">Save</button>
 
 @code {
+    private string emailErrorMessage = "";
+    private string connectionStringErrorMessage = "";
 
+    private void CheckAndConfigure()
+    {
+        if (string.IsNullOrWhiteSpace(viewModel.EmailInput))
+        {
+            emailErrorMessage = "Field is empty.";
+        }
+        else
+        {
+            emailErrorMessage = "";
+            viewModel.ConfigureCommand.Execute(null);
+        }
+    }
+
+    private void CheckAndSaveSettings()
+    {
+        if (string.IsNullOrWhiteSpace(viewModel.ConnectionString))
+        {
+            viewModel.ConnectionSucceededText = "Field is empty.";
+        }
+        else
+        {
+            viewModel.ConnectionSucceededText = "";
+            viewModel.SaveSettings();
+        }
+    }
 }
+
 

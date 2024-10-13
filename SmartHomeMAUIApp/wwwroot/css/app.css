@@ -1,5 +1,6 @@
 ﻿html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: white;
 }
 
 a, .btn-link {
@@ -84,3 +85,139 @@ h1:focus {
         padding-left: env(safe-area-inset-left);
     }
 }
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 200px);
+    gap: 50px;
+    padding: 10px;
+    margin: 50px;
+    /* Ensure that the grid itself doesn’t overflow */
+    overflow: hidden;
+}
+
+.grid-item {
+    width: 200px;
+    height: 200px;
+    border-radius: 14px;
+    border: none;
+    background-color: rgba(47,51,76,255);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.grid-item-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    overflow: hidden;
+    height: 200px;
+}
+
+.lightbulb {
+    height: 40px;
+    width: 40px;
+}
+
+.device-name, .device-state, .device-brightness, .device-connectionstate {
+    margin: 0px;
+    font-weight: bold;
+    font-size: 20px;
+    white-space: nowrap; 
+    overflow: hidden; 
+}
+
+.device-name {
+    font-size: 18px;
+}
+
+.device-state, .device-brightness {
+    font-size: 13px;
+    color: white;
+}
+
+.device-connectionstate {
+    font-size: 14px;
+    color: gray;
+}
+
+.device-deviceid {
+    font-size: 11px;
+    color: gray;
+}
+
+.grid-item-left p {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 500px;
+    height: 500px;
+    background: rgba(52, 61, 85, 255);
+    border-radius: 14px;
+    border-width: 15px;
+    padding: 30px;
+}
+
+.input-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-info {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.input-form {
+    background: rgba(102, 111, 135, 255);
+    color: white;
+    border: none;
+    margin-bottom: 20px;
+    width: 300px;
+    height: 40px;
+    border: none;
+    outline: none;
+    border: 2px solid rgba(48,53,94,255);
+    border-radius: 4px;
+    padding: 20px 45px 20px 20px;
+}
+
+    .input-form::placeholder {
+        color: white;
+        opacity: 0.4;
+    }
+
+.input-box .button {
+    width: 300px;
+    height: 40px;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+    
+.input-box .button:hover {
+        background-color: #f0f0f0; 
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); 
+        transform: scale(1.05); 
+}
+       
+.input-box .button:active {
+        background-color: #e0e0e0;
+        box-shadow: 0 3px 4px rgba(0, 0, 0, 0.2); 
+        transform: scale(0.98); 
+}
+

@@ -7,17 +7,22 @@ namespace Shared.Handlers
     {
         private string? _connectionString;
         private RegistryManager? _registry;
+        public bool ConnectionSucceeded { get; private set; } = false;
 
-        public void SetConnectionString(string connectionString)
+        public bool SetConnectionString(string connectionString)
         {
             try
             {
                 _connectionString = connectionString;
                 _registry = RegistryManager.CreateFromConnectionString(_connectionString);
+                ConnectionSucceeded = true;
+                return true;
             }
             catch (Exception ex)
             {
                 _registry = null; 
+                ConnectionSucceeded = false;
+                return false;
             }
         }
         public bool IsRegistryInitialized => _registry != null;
@@ -55,14 +60,20 @@ namespace Shared.Handlers
                 {
                     try
                     {
-                        bool.TryParse(twin?.Properties?.Reported["deviceState"]?.ToString(), out bool deviceState);
+                        bool.TryParse(twin?.Properties?.Reported["LampToggled"]?.ToString(), out bool deviceState);
                         device.DeviceState = deviceState;
                     }
                     catch { device.DeviceState = false; }
-                }
-                else
-                {
-                    device.DeviceState = false;
+
+                    try
+                    {
+                        int.TryParse(twin?.Properties?.Reported["LampBrightness"]?.ToString(), out int brightness);
+                        device.Brightness = brightness;
+                    }
+                    catch
+                    {
+                        device.Brightness = 0; 
+                    }
                 }
 
                 devices.Add(device);

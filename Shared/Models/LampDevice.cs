@@ -6,6 +6,7 @@ public class LampDevice
 	public string DeviceId { get; set; } = null!;
 	public string? DeviceName { get; set; } = "";
 	public string? DeviceType { get; set; } = "";
+	public int? Brightness { get; set; }
 
 
 

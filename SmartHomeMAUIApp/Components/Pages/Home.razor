@@ -1,55 +1,77 @@
 ﻿@page "/"
 @using Shared.Handlers
 @using Shared.Models
+@using SmartHomeMAUIApp.Components.Layout
 @using SmartHomeMAUIApp.ViewModels
 @inject HomeViewModel viewModel
 
-<h1>DEVICES</h1>
-
-<div>
-    <h1 class="headline"> DEVICES</h1>
-
-    <div class="devices">
-        @if (Devices != null)
+<div class="grid-container">
+    @if (Devices != null && Devices.Any())
+    {
+        @foreach (var device in Devices)
         {
-            @foreach (var device in Devices)
-            {
-                <h3 class="device_id">@device.DeviceId</h3>
-                <p>@device.DeviceName</p>
-                <p>@device.ConnectionState</p>
-                <p>@device.DeviceState</p>
-                <p>@device.DeviceType</p>
-            }
+            <div class="grid-item">
+                <div class="grid-item-left">
+                    <img src="images/lightbulb_purple.png" class="lightbulb">
+                    <p class="device-name">@device?.DeviceName</p>
+
+                    <p class="device-state">@((device?.DeviceState ?? false) ? "On" : "Off")</p>
+
+                    <p class="device-brightness">Brightness: @(device?.Brightness > 0 ? device.Brightness : 0)%</p>
+
+                    <p class="device-deviceid">
+                        @device?.DeviceId
+                    </p>
+                    
+                    <p class="device-connectionstate">
+                        @((device?.ConnectionState ?? false) ? "Connected" : "Disconnected")
+                    </p>
+                </div>
+            </div>
         }
-        else
-        {
-            <p>Loading...</p>
-        }
-    </div>
+    }
+    else
+    {
+        <h1>Loading devices...</h1>
+    }
 </div>
 
 @code {
-    private IEnumerable<LampDevice> Devices = [];
+    private IEnumerable<LampDevice> Devices = new List<LampDevice>();
 
     protected override async Task OnInitializedAsync()
     {
-        if (viewModel.IotHubInstance.IsRegistryInitialized)
+        try
         {
-            Devices = await viewModel.GetDevicesAsync();
-            viewModel.Timer = new Timer(async _ => await SetDevicesAsync(), null, 0, viewModel.TimerInterval);
+            if (viewModel.IotHubInstance.IsRegistryInitialized)
+            {
+                Devices = await viewModel.GetDevicesAsync();
+                viewModel.Timer = new Timer(async _ => await SetDevicesAsync(), null, 0, viewModel.TimerInterval);
+            }
+            else
+            {
+                Console.WriteLine("RegistryManager is not initialized.");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Console.WriteLine("RegistryManager is not initialized.");
+            Console.WriteLine($"Error during initialization: {ex.Message}");
         }
     }
 
     private async Task SetDevicesAsync()
     {
-        if (viewModel.IotHubInstance.IsRegistryInitialized)
+        try
         {
-            Devices = await viewModel.GetDevicesAsync();
-            await InvokeAsync(StateHasChanged);
+            if (viewModel.IotHubInstance.IsRegistryInitialized)
+            {
+                Devices = await viewModel.GetDevicesAsync();
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating devices: {ex.Message}");
         }
     }
 }
