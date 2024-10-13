@@ -5,6 +5,7 @@ using Azure.ResourceManager;
 using Azure.ResourceManager.IotHub;
 using Azure.ResourceManager.IotHub.Models;
 using Azure.ResourceManager.Resources;
+using Microsoft.Identity.Client;
 using Shared.Azure.Models;
 
 namespace Shared.Azure.Communications;
@@ -20,11 +21,9 @@ public class AzureResourceManager
     {
         try
         {
-            var defaultSubscriptionId = "c6aef30e-b724-47f9-9cb4-7e98797aaeb4";
-            var tenantId = "5c2a06ee-4772-48db-90c3-d69f8666c5bc";
-            _client = new ArmClient(new DefaultAzureCredential(new DefaultAzureCredentialOptions { TenantId = tenantId }));
+            _client = new(new DefaultAzureCredential());
 
-            _subscription = _client.GetSubscriptionResource(new ResourceIdentifier($"/subscriptions/{defaultSubscriptionId}"));
+            _subscription = await _client.GetDefaultSubscriptionAsync();
 
             var subscriptionDetails = await _subscription.GetAsync();
         }

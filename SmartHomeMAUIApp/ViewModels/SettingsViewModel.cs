@@ -165,7 +165,7 @@ public partial class SettingsViewModel : ObservableObject
 
                     previousDeviceIds = currentDeviceIds;
 
-                    await Task.Delay(10000, cancellationToken);
+                    await Task.Delay(8000, cancellationToken);
                 }
                 catch (Exception ex)
                 {
